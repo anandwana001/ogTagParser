@@ -38,22 +38,22 @@ class OgTagParser {
                         val text = tag.attr("property")
                         when (text) {
                             "og:image" -> {
-                                linkSourceContent.setImage(tag.attr("content"))
+                                linkSourceContent.images = (tag.attr("content"))
                             }
                             "og:description" -> {
-                                linkSourceContent.setDescription(tag.attr("content"))
+                                linkSourceContent.ogDescription = (tag.attr("content"))
                             }
                             "og:url" -> {
-                                linkSourceContent.setUrl(tag.attr("content"))
+                                linkSourceContent.ogUrl = (tag.attr("content"))
                             }
                             "og:title" -> {
-                                linkSourceContent.setTitle(tag.attr("content"))
+                                linkSourceContent.ogTitle = (tag.attr("content"))
                             }
                             "og:site_name" -> {
-                                linkSourceContent.setSiteName(tag.attr("content"))
+                                linkSourceContent.ogSiteName = (tag.attr("content"))
                             }
                             "og:type" -> {
-                                linkSourceContent.setType(tag.attr("content"))
+                                linkSourceContent.ogType = (tag.attr("content"))
                             }
                         }
                     }

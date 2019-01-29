@@ -35,18 +35,18 @@ class MainActivity : AppCompatActivity() {
 
         override fun onAfterLoading(linkSourceContent: LinkSourceContent) {
             progress.visibility = View.GONE
-            textView2.text = "Title - " + linkSourceContent.getTitle() +
-                    "\n Description - " + linkSourceContent.getDescription() +
-                    "\n Url - " + linkSourceContent.getUrl() +
-                    "\n SiteName - " + linkSourceContent.getSiteName() +
-                    "\n Type - " + linkSourceContent.getType() +
-                    "\n Image - " + linkSourceContent.getImage()
+            textView2.text = "Title - " + linkSourceContent.ogTitle +
+                    "\n Description - " + linkSourceContent.ogDescription +
+                    "\n Url - " + linkSourceContent.ogUrl +
+                    "\n SiteName - " + linkSourceContent.ogSiteName +
+                    "\n Type - " + linkSourceContent.ogType +
+                    "\n Image - " + linkSourceContent.images
 
-            tvTitle.text = linkSourceContent.getTitle()
-            tvUrl.text = linkSourceContent.getUrl()
-            tvDescription.text = linkSourceContent.getDescription()
+            tvTitle.text = linkSourceContent.ogTitle
+            tvUrl.text = linkSourceContent.ogUrl
+            tvDescription.text = linkSourceContent.ogDescription
             Glide.with(this@MainActivity)
-                .load(linkSourceContent.getImage())
+                .load(linkSourceContent.images)
                 .into(drop_preview.ivImage)
         }
 
