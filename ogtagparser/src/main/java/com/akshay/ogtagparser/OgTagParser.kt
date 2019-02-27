@@ -31,35 +31,45 @@ class OgTagParser {
             if (!urlToParse.contains("http")) {
                 urlToParse = "http://" + urlToParse
             }
-            val con = Jsoup.connect(urlToParse)
-            val doc = con.userAgent("Mozilla").get()
-            val ogTags = doc.select("meta[property^=og:]")
-            when {
-                ogTags.size > 0 ->
-                    ogTags.forEachIndexed { index, element ->
-                        val tag = ogTags[index]
-                        val text = tag.attr("property")
-                        when (text) {
-                            "og:image" -> {
-                                linkSourceContent.images = (tag.attr("content"))
-                            }
-                            "og:description" -> {
-                                linkSourceContent.ogDescription = (tag.attr("content"))
-                            }
-                            "og:url" -> {
-                                linkSourceContent.ogUrl = (tag.attr("content"))
-                            }
-                            "og:title" -> {
-                                linkSourceContent.ogTitle = (tag.attr("content"))
-                            }
-                            "og:site_name" -> {
-                                linkSourceContent.ogSiteName = (tag.attr("content"))
-                            }
-                            "og:type" -> {
-                                linkSourceContent.ogType = (tag.attr("content"))
+            try {
+                val response = Jsoup.connect(urlToParse)
+                    .ignoreContentType(true)
+                    .userAgent("Mozilla")
+                    .referrer("http://www.google.com")
+                    .timeout(12000)
+                    .followRedirects(true)
+                    .execute()
+                val doc = response.parse()
+                val ogTags = doc.select("meta[property^=og:]")
+                when {
+                    ogTags.size > 0 ->
+                        ogTags.forEachIndexed { index, element ->
+                            val tag = ogTags[index]
+                            val text = tag.attr("property")
+                            when (text) {
+                                "og:image" -> {
+                                    linkSourceContent.images = (tag.attr("content"))
+                                }
+                                "og:description" -> {
+                                    linkSourceContent.ogDescription = (tag.attr("content"))
+                                }
+                                "og:url" -> {
+                                    linkSourceContent.ogUrl = (tag.attr("content"))
+                                }
+                                "og:title" -> {
+                                    linkSourceContent.ogTitle = (tag.attr("content"))
+                                }
+                                "og:site_name" -> {
+                                    linkSourceContent.ogSiteName = (tag.attr("content"))
+                                }
+                                "og:type" -> {
+                                    linkSourceContent.ogType = (tag.attr("content"))
+                                }
                             }
                         }
-                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
             return null
         }

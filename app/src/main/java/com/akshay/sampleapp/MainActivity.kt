@@ -10,6 +10,8 @@ import com.akshay.ogtagparser.OgTagParser
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.view.*
+import java.util.*
+import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,7 +23,10 @@ class MainActivity : AppCompatActivity() {
             editText.text.isNullOrBlank().apply {
                 when {
                     this -> Toast.makeText(this@MainActivity, "Please Enter url", Toast.LENGTH_LONG).show()
-                    else -> OgTagParser().execute(editText.text.toString().trim(), callback)
+                    else -> {
+                        val linkArray = pullLinks(editText.text.toString().trim())
+                        OgTagParser().execute(linkArray[0], callback)
+                    }
                 }
             }
         }
@@ -36,11 +41,11 @@ class MainActivity : AppCompatActivity() {
         override fun onAfterLoading(linkSourceContent: LinkSourceContent) {
             progress.visibility = View.GONE
             textView2.text = "Title - " + linkSourceContent.ogTitle +
-                    "\n Description - " + linkSourceContent.ogDescription +
-                    "\n Url - " + linkSourceContent.ogUrl +
-                    "\n SiteName - " + linkSourceContent.ogSiteName +
-                    "\n Type - " + linkSourceContent.ogType +
-                    "\n Image - " + linkSourceContent.images
+                    "\n\n Description - " + linkSourceContent.ogDescription +
+                    "\n\n Url - " + linkSourceContent.ogUrl +
+                    "\n\n SiteName - " + linkSourceContent.ogSiteName +
+                    "\n\n Type - " + linkSourceContent.ogType +
+                    "\n\n Image - " + linkSourceContent.images
 
             tvTitle.text = linkSourceContent.ogTitle
             tvUrl.text = linkSourceContent.ogUrl
@@ -50,6 +55,22 @@ class MainActivity : AppCompatActivity() {
                 .into(drop_preview.ivImage)
         }
 
+    }
+
+    private fun pullLinks(input: String): ArrayList<String> {
+        val containedUrls = ArrayList<String>()
+        val urlRegex = "(?:(?:https?|ftp):\\/\\/)?[\\w/\\-?=%.]+\\.[\\w/\\-?=%.]+"
+        val pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE)
+        val urlMatcher = pattern.matcher(input)
+        while (urlMatcher.find()) {
+            containedUrls.add(
+                input.substring(
+                    urlMatcher.start(0),
+                    urlMatcher.end(0)
+                )
+            )
+        }
+        return containedUrls
     }
 
 }
