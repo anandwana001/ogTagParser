@@ -28,6 +28,9 @@ class OgTagParser {
         }
 
         override fun doInBackground(vararg voids: Void): Void? {
+            if (!urlToParse.contains("http")) {
+                urlToParse = "http://" + urlToParse
+            }
             val con = Jsoup.connect(urlToParse)
             val doc = con.userAgent("Mozilla").get()
             val ogTags = doc.select("meta[property^=og:]")
