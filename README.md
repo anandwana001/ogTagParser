@@ -12,7 +12,7 @@ Android library to parse open graph tags (ogTags) from given URL.
 ##### Step 1. Add the dependency
 ```
 dependencies {
-    implementation 'com.akshay.ogtagparser:ogtagparser:0.1.0'
+    implementation 'com.github.anandwana001:ogTagParser:1.0.0'
 }
 ```
 
