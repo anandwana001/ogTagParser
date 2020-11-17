@@ -7,24 +7,16 @@ Android library to parse open graph tags (ogTags) from given URL.
 
 ## Getting Started
 
-##### Step 1. Add the JitPack repository to your Add it in your root `build.gradle` at the end of repositories:
 
-```
-allprojects {
-    repositories {
-   	   maven { url 'https://jitpack.io' }
-    }
-}
-```
 
-##### Step 2. Add the dependency
+##### Step 1. Add the dependency
 ```
 dependencies {
     implementation 'com.akshay.ogtagparser:ogtagparser:0.1.0'
 }
 ```
 
-##### Step3. Pass the URL and get the Data
+##### Step 2. Pass the URL and get the Data
 ```
 OgTagParser().execute(URL_TO_PARSE, object: LinkViewCallback {
 
