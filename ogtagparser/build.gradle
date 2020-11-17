@@ -1,6 +1,21 @@
+apply plugin: 'com.novoda.bintray-release'
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+
+publish {
+    def groupProjectID = 'com.akshay.ogtagparser'
+    def artifactProjectID = 'ogtagparser'
+    def publishVersionID = '0.1.0'
+
+    userOrg = 'anandwana001'
+    repoName = 'ogTagParser'
+    groupId = groupProjectID
+    artifactId = artifactProjectID
+    publishVersion = publishVersionID
+    desc = 'Android library to parse og tags'
+    website = 'https://github.com/anandwana001/ogTagParser'
+}
 
 android {
     compileSdkVersion 29
