@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">sample app</string>
-    <string name="string_enter_website_hint">Enter Website Address</string>
-    <string name="string_show_og_tags">show og data</string>
+  <string name="app_name">OgTagParser</string>
+  <string name="string_enter_website_hint">Enter Website Address</string>
+  <string name="string_show_og_tags">show og data</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.akshay.ogtagparser
+package com.anandwana001.ogtagparser
 
 /**
  * Created by akshaynandwana on

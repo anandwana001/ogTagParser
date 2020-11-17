@@ -1,20 +1,19 @@
-package com.akshay.sampleapp
+package com.akshay.ogtagparser
 
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import com.akshay.ogtagparser.LinkSourceContent
-import com.akshay.ogtagparser.LinkViewCallback
-import com.akshay.ogtagparser.OgTagParser
+import com.anandwana001.ogtagparser.LinkSourceContent
+import com.anandwana001.ogtagparser.LinkViewCallback
+import com.anandwana001.ogtagparser.OgTagParser
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.view.*
-import java.util.*
+import java.util.ArrayList
 import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -30,7 +29,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
 
     var callback: LinkViewCallback = object : LinkViewCallback {
