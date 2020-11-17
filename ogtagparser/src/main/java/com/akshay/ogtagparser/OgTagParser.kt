@@ -1,7 +1,8 @@
 package com.akshay.ogtagparser
 
-import android.os.AsyncTask
+import kotlinx.coroutines.*
 import org.jsoup.Jsoup
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by akshaynandwana on
@@ -16,20 +17,27 @@ class OgTagParser {
         JsoupOgTagParser(urlToParse).execute()
     }
 
-    inner class JsoupOgTagParser(var urlToParse: String) : AsyncTask<Void, Void, Void?>() {
+    inner class JsoupOgTagParser(var urlToParse: String) : CoroutineScope {
+
+        private var job: Job = Job()
+        override val coroutineContext: CoroutineContext
+            get() = Dispatchers.Main + job
+
+        fun execute() = launch {
+            onPreExecute()
+            val result = doInBackground()
+            onPostExecute(result)
+        }
 
         private val linkSourceContent = LinkSourceContent()
 
-        override fun onPreExecute() {
-            if (callback != null) {
-                callback!!.onBeforeLoading()
-            }
-            super.onPreExecute()
+        private fun onPreExecute() {
+            callback?.onBeforeLoading()
         }
 
-        override fun doInBackground(vararg voids: Void): Void? {
+        private suspend fun doInBackground(): LinkSourceContent = withContext(Dispatchers.IO) {
             if (!urlToParse.contains("http")) {
-                urlToParse = "http://" + urlToParse
+                urlToParse = "http://$urlToParse"
             }
             try {
                 val response = Jsoup.connect(urlToParse)
@@ -71,14 +79,13 @@ class OgTagParser {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            return null
+            return@withContext linkSourceContent
         }
 
-        override fun onPostExecute(result: Void?) {
+        private fun onPostExecute(linkSourceContent: LinkSourceContent) {
             if (callback != null) {
                 callback!!.onAfterLoading(linkSourceContent)
             }
-            super.onPostExecute(result)
         }
     }
 }

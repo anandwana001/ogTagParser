@@ -72,5 +72,4 @@ class MainActivity : AppCompatActivity() {
         }
         return containedUrls
     }
-
 }
