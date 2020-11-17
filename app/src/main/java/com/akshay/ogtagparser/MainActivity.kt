@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
                     "\n\n Url - " + linkSourceContent.ogUrl +
                     "\n\n SiteName - " + linkSourceContent.ogSiteName +
                     "\n\n Type - " + linkSourceContent.ogType +
-                    "\n\n Image - " + linkSourceContent.images
+                    "\n\n Image Url - " + linkSourceContent.images
 
             tvTitle.text = linkSourceContent.ogTitle
             tvUrl.text = linkSourceContent.ogUrl
