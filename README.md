@@ -11,7 +11,7 @@ Android library to parse open graph tags (ogTags) from given URL.
 ```gradle
 dependencies {
     ...
-    implementation 'com.github.anandwana001:ogTagParser:1.0.0'
+    implementation 'com.github.anandwana001:ogTagParser:1.0.1'
 }
 ```
 
