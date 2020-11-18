@@ -8,10 +8,16 @@ import kotlin.coroutines.CoroutineContext
  * Created by akshaynandwana on
  * 25, January, 2019
  **/
+
+/**
+ * Main class where all logic happens.
+ * This class uses jsoup which gets the url and returned all the parsed data.
+ */
 class OgTagParser {
 
     private var callback: LinkViewCallback? = null
 
+    // This is the entry point of the library which gets url and the callback
     fun execute(urlToParse: String, callback: LinkViewCallback) {
         this.callback = callback
         JsoupOgTagParser(urlToParse).execute()
@@ -41,17 +47,17 @@ class OgTagParser {
             }
             try {
                 val response = Jsoup.connect(urlToParse)
-                    .ignoreContentType(true)
-                    .userAgent("Mozilla")
-                    .referrer("http://www.google.com")
-                    .timeout(12000)
-                    .followRedirects(true)
-                    .execute()
+                        .ignoreContentType(true)
+                        .userAgent("Mozilla")
+                        .referrer("http://www.google.com")
+                        .timeout(12000)
+                        .followRedirects(true)
+                        .execute()
                 val doc = response.parse()
                 val ogTags = doc.select("meta[property^=og:]")
                 when {
                     ogTags.size > 0 ->
-                        ogTags.forEachIndexed { index, element ->
+                        ogTags.forEachIndexed { index, _ ->
                             val tag = ogTags[index]
                             val text = tag.attr("property")
                             when (text) {
@@ -83,9 +89,7 @@ class OgTagParser {
         }
 
         private fun onPostExecute(linkSourceContent: LinkSourceContent) {
-            if (callback != null) {
-                callback!!.onAfterLoading(linkSourceContent)
-            }
+            callback?.onAfterLoading(linkSourceContent)
         }
     }
 }

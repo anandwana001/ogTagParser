@@ -30,7 +30,7 @@ task clean(type: Delete) {
 ext {
     // OgTagParser Library Info
     libVersionCode = 1
-    libVersionName = '1.0.0'
+    libVersionName = '1.0.1'
     libPomUrl = 'https://github.com/anandwana001/ogTagParser'
     libGithubRepo = 'anandwana001/ogTagParser'
     libModuleName = 'ogTagParser'
