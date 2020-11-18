@@ -1,16 +1,16 @@
 package com.akshay.ogtagparser
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.anandwana001.ogtagparser.LinkSourceContent
 import com.anandwana001.ogtagparser.LinkViewCallback
 import com.anandwana001.ogtagparser.OgTagParser
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.view.*
-import java.util.ArrayList
+import java.util.*
 import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity() {
@@ -21,7 +21,8 @@ class MainActivity : AppCompatActivity() {
         button.setOnClickListener {
             editText.text.isNullOrBlank().apply {
                 when {
-                    this -> Toast.makeText(this@MainActivity, "Please Enter url", Toast.LENGTH_LONG).show()
+                    this -> Toast.makeText(this@MainActivity, "Please Enter url", Toast.LENGTH_LONG)
+                        .show()
                     else -> {
                         val linkArray = pullLinks(editText.text.toString().trim())
                         OgTagParser().execute(linkArray[0], callback)
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity() {
             tvTitle.text = linkSourceContent.ogTitle
             tvUrl.text = linkSourceContent.ogUrl
             tvDescription.text = linkSourceContent.ogDescription
+            tvSiteName.text = linkSourceContent.ogSiteName
             Glide.with(this@MainActivity)
                 .load(linkSourceContent.images)
                 .into(drop_preview.ivImage)
