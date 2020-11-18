@@ -3,7 +3,7 @@ Android library to parse open graph tags (ogTags) from given URL.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 <br>
-<img src="https://raw.githubusercontent.com/anandwana001/ogTagParser/master/art/screenshot_og_tag_parser.png" width="250" height="500"/>
+<img src="https://raw.githubusercontent.com/anandwana001/ogTagParser/master/art/screenshot_og_tag_parser.png" width="250px" />
 
 ## Getting Started
 
