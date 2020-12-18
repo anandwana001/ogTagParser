@@ -54,7 +54,7 @@ class OgTagParser {
             try {
                 val response = Jsoup.connect(urlToParse)
                         .ignoreContentType(true)
-                        .userAgent("Mozilla")
+                        .userAgent(userAgent)
                         .referrer("http://www.google.com")
                         .timeout(12000)
                         .followRedirects(true)
