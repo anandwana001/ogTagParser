@@ -16,6 +16,12 @@ import kotlin.coroutines.CoroutineContext
 class OgTagParser {
 
     private var callback: LinkViewCallback? = null
+    private var userAgent: String = "Mozilla"
+
+    fun setUserAgent(userAgent: String): OgTagParser {
+        this.userAgent = userAgent
+        return this
+    }
 
     // This is the entry point of the library which gets url and the callback
     fun execute(urlToParse: String, callback: LinkViewCallback) {
