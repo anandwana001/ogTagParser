@@ -3,50 +3,59 @@ Android library to parse open graph tags (ogTags) from given URL.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 <br>
-<img src="https://raw.githubusercontent.com/anandwana001/ogTagParser/master/art/screenshot_og_tag_parser.png" width="250px" />
+<img src="https://raw.githubusercontent.com/anandwana001/ogTagParser/master/art/screenshot_og_tag_parser_test_release.png" width="250px" />
 
 ## Getting Started
 
 ##### Step 1. Add the dependency
+Root Level Build.gradle file
+```gradle
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+module level build.gradle file
 ```gradle
 dependencies {
     ...
-    implementation 'com.github.anandwana001:ogTagParser:1.0.1'
+    implementation 'com.github.anandwana001:ogTagParser:1.0.2'
 }
 ```
 
 ##### Step 2. Pass the URL and get the Data
 ```kotlin
-OgTagParser().execute(URL_TO_PARSE, object: LinkViewCallback {
+OgTagParser().getContents(
 
-    override fun onBeforeLoading() {
+    URL_TO_PARSE,
 
-        // show some loading animations
+    object : LinkViewCallback {
 
+        override fun onAfterLoading(linkSourceContent: LinkSourceContent) {
+
+             // og:title
+             linkSourceContent.ogTitle
+
+             // og:description
+             linkSourceContent.ogDescription
+
+             // og:url
+             linkSourceContent.ogUrl
+
+             // og:site_name
+             linkSourceContent.ogSiteName
+
+             // og:type
+             linkSourceContent.ogType
+
+             // og:image
+             linkSourceContent.images
+        }
     }
-
-    override fun onAfterLoading(linkSourceContent: LinkSourceContent) {
-
-         // og:title
-         linkSourceContent.ogTitle
-
-         // og:description
-         linkSourceContent.ogDescription
-
-         // og:url
-         linkSourceContent.ogUrl
-
-         // og:site_name
-         linkSourceContent.ogSiteName
-
-         // og:type
-         linkSourceContent.ogType
-
-         // og:image
-         linkSourceContent.images
-
-    }
-})
+)
 ```
 
 ## If this library helps you in anyway, show your love :heart: by putting a :star: on this project :v:
