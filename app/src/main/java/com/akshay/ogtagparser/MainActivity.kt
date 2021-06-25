@@ -1,7 +1,7 @@
 package com.akshay.ogtagparser
 
 import android.os.Bundle
-import android.view.View
+import android.text.TextUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.anandwana001.ogtagparser.LinkSourceContent
@@ -11,57 +11,57 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.view.*
 import java.util.*
+import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         button.setOnClickListener {
-            editText.text.isNullOrBlank().apply {
-                when {
-                    this -> Toast.makeText(this@MainActivity, "Please Enter url", Toast.LENGTH_LONG)
-                        .show()
-                    else -> {
-                        val linkArray = pullLinks(editText.text.toString().trim())
-                        OgTagParser().execute(linkArray[0], callback)
+            if (TextUtils.isEmpty(editText.text.toString())) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "Please Enter URL",
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                val linkArray = getUrls(editText.text.toString().trim())
+                OgTagParser().getContents(
+                    linkArray[0],
+                    object : LinkViewCallback {
+                        override fun onAfterLoading(linkSourceContent: LinkSourceContent) {
+                            textView2.text = String.format(
+                                getString(R.string.display_data),
+                                linkSourceContent.ogTitle,
+                                linkSourceContent.ogDescription,
+                                linkSourceContent.ogUrl,
+                                linkSourceContent.ogSiteName,
+                                linkSourceContent.ogType,
+                                linkSourceContent.images
+                            )
+                            tvTitle.text = linkSourceContent.ogTitle
+                            tvUrl.text = linkSourceContent.ogUrl
+                            tvDescription.text = linkSourceContent.ogDescription
+                            tvSiteName.text = linkSourceContent.ogSiteName
+                            Glide.with(this@MainActivity)
+                                .load(linkSourceContent.images)
+                                .into(drop_preview.ivImage)
+                        }
                     }
-                }
+                )
             }
         }
     }
 
-    var callback: LinkViewCallback = object : LinkViewCallback {
-        override fun onBeforeLoading() {
-            progress.visibility = View.VISIBLE
-        }
-
-        override fun onAfterLoading(linkSourceContent: LinkSourceContent) {
-            progress.visibility = View.GONE
-            textView2.text = "Title - " + linkSourceContent.ogTitle +
-                    "\n\n Description - " + linkSourceContent.ogDescription +
-                    "\n\n Url - " + linkSourceContent.ogUrl +
-                    "\n\n SiteName - " + linkSourceContent.ogSiteName +
-                    "\n\n Type - " + linkSourceContent.ogType +
-                    "\n\n Image Url - " + linkSourceContent.images
-
-            tvTitle.text = linkSourceContent.ogTitle
-            tvUrl.text = linkSourceContent.ogUrl
-            tvDescription.text = linkSourceContent.ogDescription
-            tvSiteName.text = linkSourceContent.ogSiteName
-            Glide.with(this@MainActivity)
-                .load(linkSourceContent.images)
-                .into(drop_preview.ivImage)
-        }
-
-    }
-
-    private fun pullLinks(input: String): ArrayList<String> {
+    private fun getUrls(input: String): ArrayList<String> {
         val containedUrls = ArrayList<String>()
-        val urlRegex = "(?:(?:https?|ftp):\\/\\/)?[\\w/\\-?=%.]+\\.[\\w/\\-?=%.]+"
-        val pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE)
-        val urlMatcher = pattern.matcher(input)
+        val urlMatcher = getPatternMatcher(
+            "(?:(?:https?|ftp):\\/\\/)?[\\w/\\-?=%.]+\\.[\\w/\\-?=%.]+",
+            input
+        )
         while (urlMatcher.find()) {
             containedUrls.add(
                 input.substring(
@@ -71,5 +71,10 @@ class MainActivity : AppCompatActivity() {
             )
         }
         return containedUrls
+    }
+
+    private fun getPatternMatcher(urlRegex: String, input: String): Matcher {
+        val pattern = Pattern.compile(urlRegex, Pattern.CASE_INSENSITIVE)
+        return pattern.matcher(input)
     }
 }

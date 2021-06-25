@@ -18,27 +18,21 @@ class OgTagParser {
     private var callback: LinkViewCallback? = null
 
     // This is the entry point of the library which gets url and the callback
-    fun execute(urlToParse: String, callback: LinkViewCallback) {
+    fun getContents(urlToParse: String, callback: LinkViewCallback) {
         this.callback = callback
         JsoupOgTagParser(urlToParse).execute()
     }
 
     inner class JsoupOgTagParser(var urlToParse: String) : CoroutineScope {
 
-        private var job: Job = Job()
+        private val linkSourceContent = LinkSourceContent()
+        private val job: Job = Job()
         override val coroutineContext: CoroutineContext
             get() = Dispatchers.Main + job
 
         fun execute() = launch {
-            onPreExecute()
             val result = doInBackground()
             onPostExecute(result)
-        }
-
-        private val linkSourceContent = LinkSourceContent()
-
-        private fun onPreExecute() {
-            callback?.onBeforeLoading()
         }
 
         private suspend fun doInBackground(): LinkSourceContent = withContext(Dispatchers.IO) {
@@ -47,12 +41,12 @@ class OgTagParser {
             }
             try {
                 val response = Jsoup.connect(urlToParse)
-                        .ignoreContentType(true)
-                        .userAgent("Mozilla")
-                        .referrer("http://www.google.com")
-                        .timeout(12000)
-                        .followRedirects(true)
-                        .execute()
+                    .ignoreContentType(true)
+                    .userAgent("Mozilla")
+                    .referrer("http://www.google.com")
+                    .timeout(12000)
+                    .followRedirects(true)
+                    .execute()
                 val doc = response.parse()
                 val ogTags = doc.select("meta[property^=og:]")
                 when {
