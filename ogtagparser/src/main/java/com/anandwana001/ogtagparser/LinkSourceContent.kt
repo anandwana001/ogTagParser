@@ -1,7 +1,7 @@
 package com.anandwana001.ogtagparser
 
 /**
- * Created by akshaynandwana on
+ * Created by anandwana001 on
  * 26, January, 2019
  **/
 
@@ -12,7 +12,7 @@ data class LinkSourceContent(
     var ogTitle: String,
     var ogDescription: String,
     var ogUrl: String,
-    var images: String,
+    var image: String,
     var ogSiteName: String,
     var ogType: String
 ) {

@@ -2,12 +2,19 @@ package com.anandwana001.ogtagparser
 
 import kotlinx.coroutines.*
 import org.jsoup.Jsoup
-import kotlin.coroutines.CoroutineContext
+import org.jsoup.nodes.Document
 
 /**
- * Created by akshaynandwana on
+ * Created by anandwana001 on
  * 25, January, 2019
  **/
+
+const val OG_TITLE: String = "og:title"
+const val OG_DESCRIPTION: String = "og:description"
+const val OG_TYPE: String = "og:type"
+const val OG_IMAGE: String = "og:image"
+const val OG_URL: String = "og:url"
+const val OG_SITE_NAME: String = "og:site_name"
 
 /**
  * Main class where all logic happens.
@@ -15,30 +22,26 @@ import kotlin.coroutines.CoroutineContext
  */
 class OgTagParser {
 
-    private var callback: LinkViewCallback? = null
-
     // This is the entry point of the library which gets url and the callback
-    fun getContents(urlToParse: String, callback: LinkViewCallback) {
-        this.callback = callback
-        JsoupOgTagParser(urlToParse).execute()
+    fun getContents(urlToParse: String): LinkSourceContent? {
+        return execute(urlToParse)
     }
 
-    inner class JsoupOgTagParser(var urlToParse: String) : CoroutineScope {
-
-        private val linkSourceContent = LinkSourceContent()
-        private val job: Job = Job()
-        override val coroutineContext: CoroutineContext
-            get() = Dispatchers.Main + job
-
-        fun execute() = launch {
-            val result = doInBackground()
-            onPostExecute(result)
+    private fun execute(urlToParse: String): LinkSourceContent? {
+        var linkSourceContent: LinkSourceContent?
+        runBlocking {
+            linkSourceContent = doInBackground(urlToParse)
         }
+        return linkSourceContent
+    }
 
-        private suspend fun doInBackground(): LinkSourceContent = withContext(Dispatchers.IO) {
-            if (!urlToParse.contains("http")) {
-                urlToParse = "http://$urlToParse"
-            }
+    /**
+     * Using withContext as we don't need parallel execution.
+     * withContext return the result of single task.
+     */
+    @Suppress("BlockingMethodInNonBlockingContext")
+    private suspend fun doInBackground(urlToParse: String): LinkSourceContent? =
+        withContext(Dispatchers.IO) {
             try {
                 val response = Jsoup.connect(urlToParse)
                     .ignoreContentType(true)
@@ -48,42 +51,44 @@ class OgTagParser {
                     .followRedirects(true)
                     .execute()
                 val doc = response.parse()
-                val ogTags = doc.select("meta[property^=og:]")
-                when {
-                    ogTags.size > 0 ->
-                        ogTags.forEachIndexed { index, _ ->
-                            val tag = ogTags[index]
-                            val text = tag.attr("property")
-                            when (text) {
-                                "og:image" -> {
-                                    linkSourceContent.images = (tag.attr("content"))
-                                }
-                                "og:description" -> {
-                                    linkSourceContent.ogDescription = (tag.attr("content"))
-                                }
-                                "og:url" -> {
-                                    linkSourceContent.ogUrl = (tag.attr("content"))
-                                }
-                                "og:title" -> {
-                                    linkSourceContent.ogTitle = (tag.attr("content"))
-                                }
-                                "og:site_name" -> {
-                                    linkSourceContent.ogSiteName = (tag.attr("content"))
-                                }
-                                "og:type" -> {
-                                    linkSourceContent.ogType = (tag.attr("content"))
-                                }
-                            }
-                        }
-                }
+                return@withContext organize_fetched_data(doc)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            return@withContext linkSourceContent
+            null
         }
 
-        private fun onPostExecute(linkSourceContent: LinkSourceContent) {
-            callback?.onAfterLoading(linkSourceContent)
+    private fun organize_fetched_data(doc: Document): LinkSourceContent {
+        val linkSourceContent = LinkSourceContent()
+        val ogTags = doc.select("meta[property^=og:]")
+        when {
+            ogTags.size > 0 ->
+                ogTags.forEachIndexed { index, _ ->
+                    val tag = ogTags[index]
+                    val property = tag.attr("property")
+                    val content = (tag.attr("content"))
+                    when (property) {
+                        OG_IMAGE -> {
+                            linkSourceContent.image = content
+                        }
+                        OG_DESCRIPTION -> {
+                            linkSourceContent.ogDescription = content
+                        }
+                        OG_URL -> {
+                            linkSourceContent.ogUrl = content
+                        }
+                        OG_TITLE -> {
+                            linkSourceContent.ogTitle = content
+                        }
+                        OG_SITE_NAME -> {
+                            linkSourceContent.ogSiteName = content
+                        }
+                        OG_TYPE -> {
+                            linkSourceContent.ogType = content
+                        }
+                    }
+                }
         }
+        return linkSourceContent
     }
 }

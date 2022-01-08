@@ -1,5 +1,5 @@
 # ogTagParser
-Android library to parse open graph tags (ogTags) from given URL.
+Kotlin library to parse open graph meta tags (ogTags) from given URL.
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 <br>
@@ -7,54 +7,18 @@ Android library to parse open graph tags (ogTags) from given URL.
 
 ## Getting Started
 
-##### Step 1. Add the dependency
-Root Level Build.gradle file
-```gradle
-allprojects {
-    repositories {
-        ...
-        maven { url 'https://jitpack.io' }
-    }
-}
-```
+<b>NOTE: This library is not hosted anywhere as of now.</b>
 
-module level build.gradle file
-```gradle
-dependencies {
-    ...
-    implementation 'com.github.anandwana001:ogTagParser:1.0.2'
-}
-```
-
-##### Step 2. Pass the URL and get the Data
+Pass the URL and get the Data
 ```kotlin
-OgTagParser().getContents(
-
-    URL_TO_PARSE,
-
-    object : LinkViewCallback {
-
-        override fun onAfterLoading(linkSourceContent: LinkSourceContent) {
-
-             // og:title
-             linkSourceContent.ogTitle
-
-             // og:description
-             linkSourceContent.ogDescription
-
-             // og:url
-             linkSourceContent.ogUrl
-
-             // og:site_name
-             linkSourceContent.ogSiteName
-
-             // og:type
-             linkSourceContent.ogType
-
-             // og:image
-             linkSourceContent.images
-        }
-    }
+val content = OgTagParser().getContents(URL_TO_PARSE)
+content?.let {
+  val title = content.ogTitle,
+  val description = content.ogDescription,
+  val url = content.ogUrl,
+  val site_name = content.ogSiteName,
+  val type = content.ogType,
+  val image = content.image
 )
 ```
 

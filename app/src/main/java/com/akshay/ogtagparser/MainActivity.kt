@@ -4,8 +4,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.anandwana001.ogtagparser.LinkSourceContent
-import com.anandwana001.ogtagparser.LinkViewCallback
 import com.anandwana001.ogtagparser.OgTagParser
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
@@ -28,38 +26,34 @@ class MainActivity : AppCompatActivity() {
                     Toast.LENGTH_LONG
                 ).show()
             } else {
-                val linkArray = getUrls(editText.text.toString().trim())
-                OgTagParser().getContents(
-                    linkArray[0],
-                    object : LinkViewCallback {
-                        override fun onAfterLoading(linkSourceContent: LinkSourceContent) {
-                            textView2.text = String.format(
-                                getString(R.string.display_data),
-                                linkSourceContent.ogTitle,
-                                linkSourceContent.ogDescription,
-                                linkSourceContent.ogUrl,
-                                linkSourceContent.ogSiteName,
-                                linkSourceContent.ogType,
-                                linkSourceContent.images
-                            )
-                            tvTitle.text = linkSourceContent.ogTitle
-                            tvUrl.text = linkSourceContent.ogUrl
-                            tvDescription.text = linkSourceContent.ogDescription
-                            tvSiteName.text = linkSourceContent.ogSiteName
-                            Glide.with(this@MainActivity)
-                                .load(linkSourceContent.images)
-                                .into(drop_preview.ivImage)
-                        }
-                    }
-                )
+                val linkArray = getFirstUrl(editText.text.toString().trim())
+                val content = OgTagParser().getContents(linkArray)
+                content?.let {
+                    textView2.text = String.format(
+                        getString(R.string.display_data),
+                        content.ogTitle,
+                        content.ogDescription,
+                        content.ogUrl,
+                        content.ogSiteName,
+                        content.ogType,
+                        content.image
+                    )
+                    tvTitle.text = content.ogTitle
+                    tvUrl.text = content.ogUrl
+                    tvDescription.text = content.ogDescription
+                    tvSiteName.text = content.ogSiteName
+                    Glide.with(this@MainActivity)
+                        .load(content.image)
+                        .into(drop_preview.ivImage)
+                }
             }
         }
     }
 
-    private fun getUrls(input: String): ArrayList<String> {
+    private fun getFirstUrl(input: String): String {
         val containedUrls = ArrayList<String>()
         val urlMatcher = getPatternMatcher(
-            "(?:(?:https?|ftp):\\/\\/)?[\\w/\\-?=%.]+\\.[\\w/\\-?=%.]+",
+            urlRegex = "(?:(?:https?|ftp):\\/\\/)?[\\w/\\-?=%.]+\\.[\\w/\\-?=%.]+",
             input
         )
         while (urlMatcher.find()) {
@@ -70,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
-        return containedUrls
+        return containedUrls[0]
     }
 
     private fun getPatternMatcher(urlRegex: String, input: String): Matcher {
